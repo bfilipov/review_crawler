@@ -1,12 +1,14 @@
 import asyncio
 from proxybroker import Broker
 
+proxy_list = []
+
 
 async def show(proxies):
     while True:
         proxy = await proxies.get()
         if proxy is None: break
-        print(f'{proxy.host}:{proxy.port}')
+        proxy_list.append(f'{proxy.host}:{proxy.port}')
 
 proxies = asyncio.Queue()
 broker = Broker(proxies)
@@ -16,3 +18,5 @@ tasks = asyncio.gather(
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(tasks)
+with open('proxies', 'w') as f:
+    [f.write("%s\n" % item) for item in proxy_list]

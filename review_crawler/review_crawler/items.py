@@ -8,7 +8,13 @@
 import scrapy
 
 
-class ReviewCrawlerItem(scrapy.Item):
+class ProductItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pass
+
+
+class ReviewItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
