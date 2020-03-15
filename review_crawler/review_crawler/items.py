@@ -10,7 +10,6 @@ from scrapy.loader.processors import TakeFirst, MapCompose, Join
 
 
 class ProductItem(scrapy.Item):
-    # define the fields for your item here like:
     title = scrapy.Field(output_processor=Join())
     article_id = scrapy.Field(output_processor=TakeFirst())
     images = scrapy.Field()
@@ -24,6 +23,24 @@ class ProductItem(scrapy.Item):
 
 
 class ReviewItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+    product_id = scrapy.Field(output_processor=TakeFirst())
+    product_url = scrapy.Field(output_processor=TakeFirst())
+    review_text = scrapy.Field(output_processor=TakeFirst())
+    review_id = scrapy.Field(output_processor=TakeFirst())
+    guid = scrapy.Field(output_processor=TakeFirst())
+    images_count = scrapy.Field(output_processor=TakeFirst())
+    creation_time = scrapy.Field(output_processor=TakeFirst())
+    images = scrapy.Field()
+    reviewer = scrapy.Field(output_processor=TakeFirst())
+    product_color = scrapy.Field(output_processor=TakeFirst())
+    product_sales = scrapy.Field(output_processor=TakeFirst())
+    product_size = scrapy.Field(output_processor=TakeFirst())
+    videos = scrapy.Field()
+    reply_count = scrapy.Field(output_processor=TakeFirst())
+    reply_count_2 = scrapy.Field(output_processor=TakeFirst())
+    review_score = scrapy.Field(output_processor=TakeFirst())
+    useful_vote_count = scrapy.Field(output_processor=TakeFirst())
+
+
+class QAItem(scrapy.Item):
     pass

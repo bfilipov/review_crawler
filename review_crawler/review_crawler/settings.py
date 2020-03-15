@@ -43,8 +43,13 @@ ROBOTSTXT_OBEY = False
 # generate proxy file with: python proxy_generator.py > proxies
 ROTATING_PROXY_LIST_PATH = os.path.realpath(os.path.join(os.getcwd(), 'proxies'))
 
+CSV_PATH_PRODUCTS = os.path.realpath(os.path.join(os.getcwd(), 'products.csv'))
+CSV_PATH_REVIEWS = os.path.realpath(os.path.join(os.getcwd(), 'reviews.csv'))
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
+
+
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
@@ -73,6 +78,8 @@ TELNETCONSOLE_ENABLED = False
 #    'review_crawler.middlewares.ReviewCrawlerSpiderMiddleware': 543,
 # }
 
+ROTATING_PROXY_PAGE_RETRY_TIMES = 20
+
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
@@ -80,7 +87,13 @@ DOWNLOADER_MIDDLEWARES = {
     'review_crawler.middlewares.RotateUserAgentMiddleware': 110,
     'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
     'review_crawler.middlewares.ReviewCrawlerDownloaderMiddleware': 543,
+}
 
+# Configure item pipelines
+# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+ITEM_PIPELINES = {
+   'review_crawler.pipelines.ReviewCrawlerPipeline': 300,
+   'review_crawler.pipelines.WriteToCsv': 301
 }
 
 # Enable or disable extensions
@@ -89,11 +102,7 @@ DOWNLOADER_MIDDLEWARES = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 # }
 
-# Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'review_crawler.pipelines.ReviewCrawlerPipeline': 300,
-# }
+
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings

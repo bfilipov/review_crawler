@@ -11,7 +11,7 @@
  scrapy genspider jd jd.com  
 
 ### setup:
- Using proxy broker we create a script to generate proxy list with 100 free proxies.  
+ Using proxy broker we create a script to generate proxy list with few hundred free proxies.  
  We create custom rotating user agent middleware.   
  We set autothrottle, to slow down crawling.  
 

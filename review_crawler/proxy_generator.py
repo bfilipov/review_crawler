@@ -5,15 +5,20 @@ proxy_list = []
 
 
 async def show(proxies):
+    count = 0
     while True:
         proxy = await proxies.get()
-        if proxy is None: break
+        if proxy is None:
+            break
         proxy_list.append(f'{proxy.host}:{proxy.port}')
+        count += 1
+        if count % 10 == 0:
+            print(f'Found {count} proxies.')
 
 proxies = asyncio.Queue()
 broker = Broker(proxies)
 tasks = asyncio.gather(
-    broker.find(types=['HTTP', 'HTTPS'], limit=100),
+    broker.find(types=['HTTP', 'HTTPS'], limit=300),
     show(proxies))
 
 loop = asyncio.get_event_loop()
