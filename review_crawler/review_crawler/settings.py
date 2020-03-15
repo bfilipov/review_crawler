@@ -15,6 +15,8 @@ BOT_NAME = 'review_crawler'
 SPIDER_MODULES = ['review_crawler.spiders']
 NEWSPIDER_MODULE = 'review_crawler.spiders'
 
+DNS_TIMEOUT = 15
+DOWNLOAD_TIMEOUT = 15
 
 # most common user agents from:
 # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
@@ -44,19 +46,20 @@ ROTATING_PROXY_LIST_PATH = os.path.realpath(os.path.join(os.getcwd(), 'proxies')
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
 
-# Configure a delay for requests for the same website (default: 0)
-# See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-DOWNLOAD_DELAY = 2
-# The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 8
-# CONCURRENT_REQUESTS_PER_IP = 16
-
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
+HTTPCACHE_ENABLED = True  # should be true in debug only\
+
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 2
+AUTOTHROTTLE_TARGET_CONCURRENCY = 3
+AUTOTHROTTLE_DEBUG = True
+CONCURRENT_REQUESTS = 3
+DOWNLOAD_DELAY = 3
+# CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {
@@ -91,19 +94,6 @@ DOWNLOADER_MIDDLEWARES = {
 # ITEM_PIPELINES = {
 #    'review_crawler.pipelines.ReviewCrawlerPipeline': 300,
 # }
-
-# Enable and configure the AutoThrottle extension (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-AUTOTHROTTLE_ENABLED = True
-# The initial download delay
-# AUTOTHROTTLE_START_DELAY = 5
-# The maximum download delay to be set in case of high latencies
-# AUTOTHROTTLE_MAX_DELAY = 60
-# The average number of requests Scrapy should be sending in parallel to
-# each remote server
-AUTOTHROTTLE_TARGET_CONCURRENCY = 4
-# Enable showing throttling stats for every response received:
-AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings

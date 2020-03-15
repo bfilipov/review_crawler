@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 import scrapy
 from review_crawler.items import ProductItem, ReviewItem
@@ -23,25 +24,24 @@ class JdSpider(scrapy.Spider):
 
     def parse_product(self, response):
         meta = response.meta
-        loader = ItemLoader(ProductItem(), selector=response)
+        product_loader = ItemLoader(ProductItem(), selector=response)
+        review_loader = ItemLoader(ReviewItem(), selector=response)
         url = response.url
         article_id = self.extract_id_from_url(url)
         if not article_id:
             return
-        loader.add_value('article_id', article_id)
-        loader.add_value('url', url)
-        loader.add_value('list_page', meta.get('list_page', ''))
-        loader.add_css('images', '.lh li img::attr(src)')
-        loader.add_css('title', '.sku-name::text')
-        loader.add_css('currency', '.p-price span::text')
-        loader.add_css('description', '.parameter2.p-parameter-list *::text')
+        product_loader.add_value('article_id', article_id)
+        product_loader.add_value('url', url)
+        product_loader.add_value('list_page', meta.get('list_page', ''))
+        product_loader.add_css('images', '.lh li img::attr(src)')
+        product_loader.add_css('title', '.sku-name::text')
+        product_loader.add_css('currency', '.p-price span::text')
+        product_loader.add_css('description', '.parameter2.p-parameter-list *::text')
         vendor_id = self.get_vendor_id(response)
-        loader.add_value('vendor_id', vendor_id)
-
-        yield self.get_stock_and_price(loader)
-        import ipdb; ipdb.set_trace()
-        # price = scrapy.Field()
-        # stock = scrapy.Field()
+        product_loader.add_value('vendor_id', vendor_id)
+        yield self.get_stock_and_price(product_loader)
+        reveiw_url = 
+        yield response.follow( callback=self.parse_review)
 
     def parse_review(self, response):
         # get summary of comments (GET METHOD)
@@ -51,7 +51,7 @@ class JdSpider(scrapy.Spider):
 
     @staticmethod
     def extract_id_from_url(url):
-        art_id = re.search(r'jd\.com\/(\d.*?)\.html', url, re.IGNORECASE).grpup(1)
+        art_id = re.search(r'jd\.com\/(\d.*?)\.html', url, re.IGNORECASE).group(1)
         return art_id
 
     @staticmethod
@@ -60,11 +60,22 @@ class JdSpider(scrapy.Spider):
         match = re.search(r'venderId:\s?(.*?),', body, re.IGNORECASE)
         return match.group(1) if match else ''
 
-    def get_stock_and_price(self, loader):
-        art_id = loader.get_collected_values('article_id')
-        vendor_id = loader.get_collected_values('vendor_id')
-        cat = loader.get_collected_values('list_page')
-        f'https://c0.3.cn/stock?skuId={art_id}&area=53283_53362_0_0&venderId={vendor_id}&buyNum=1\
-        &choseSuitSkuIds=&cat={cat}'
+    def get_stock_and_price(self, product_loader):
+        art_id = product_loader.get_collected_values('article_id')[0]
+        vendor_id = product_loader.get_collected_values('vendor_id')[0]
+        cat_m = re.search(r'cat=(.*?)(&|$)', product_loader.get_collected_values('list_page')[0], re.IGNORECASE)
+        cat = cat_m.group(1) if cat_m else None
+        url = f'https://c0.3.cn/stock?skuId={art_id}&area=53283_53362_0_0&venderId={vendor_id}&buyNum=1' \
+              f'&choseSuitSkuIds=&cat={cat}'
+        if art_id and vendor_id and cat:
+            return scrapy.Request(url, callback=self.parse_stock_and_price, meta={'product': product_loader})
+        return product_loader.load_item()
 
     def parse_stock_and_price(self, response):
+        product_loader = response.meta.get('product')
+        dct = json.loads(response.text)
+        price = dct.get('stock', {}).get('jdPrice', {}).get('p', '')
+        product_loader.add_value('price', price)
+        stock = dct.get('stock', {}).get('StockStateName', '')
+        product_loader.add_value('stock', stock)
+        return product_loader.load_item()
