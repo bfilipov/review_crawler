@@ -3,7 +3,9 @@
  conda activate review_crawler    
  pip install scrapy   
  pip install scrapy-rotating-proxies   
+ pip install sqlalchemy
  pip install proxybroker   
+
 
 ### start project:
  scrapy startproject review_crawler  
