@@ -57,15 +57,13 @@ class PostgresPipeline(object):
         record = None
         if item.get('guid'):
             record = Reviews(**item)
-
         elif item.get('article_id'):
             record = Products(**item)
         if record:
             try:
-                session.add(record)
+                session.merge(record)
                 session.commit()
             except:
-                import ipdb; ipdb.set_trace()
                 session.rollback()
                 raise
             finally:

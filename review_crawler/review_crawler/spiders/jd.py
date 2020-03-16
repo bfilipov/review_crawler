@@ -45,7 +45,9 @@ class JdSpider(scrapy.Spider):
         product_loader.add_css('description', '.parameter2.p-parameter-list *::text')
         vendor_id = self.get_vendor_id(response)
         product_loader.add_value('vendor_id', vendor_id)
-        yield self.get_stock_and_price(product_loader)
+        product = product_loader.load_item()
+        yield product
+        yield self.get_stock_and_price(product)
         yield response.follow(self.review_url.format(article_id, '0', self.comments_request_length),
                               callback=self.parse_review, meta=meta)
 
@@ -96,16 +98,15 @@ class JdSpider(scrapy.Spider):
         match = re.search(r'venderId:\s?(.*?),', body, re.IGNORECASE)
         return match.group(1) if match else ''
 
-    def get_stock_and_price(self, product_loader):
-        art_id = product_loader.get_collected_values('article_id')[0]
-        vendor_id = product_loader.get_collected_values('vendor_id')[0]
-        cat_m = re.search(r'cat=(.*?)(&|$)', product_loader.get_collected_values('list_page')[0], re.IGNORECASE)
+    def get_stock_and_price(self, product):
+        art_id = product.get('article_id')
+        vendor_id = product.get('vendor_id')
+        cat_m = re.search(r'cat=(.*?)(&|$)', product.get('list_page'), re.IGNORECASE)
         cat = cat_m.group(1) if cat_m else None
         url = f'https://c0.3.cn/stock?skuId={art_id}&area=53283_53362_0_0&venderId={vendor_id}&buyNum=1' \
               f'&choseSuitSkuIds=&cat={cat}'
         if art_id and vendor_id and cat:
-            return scrapy.Request(url, callback=self.parse_stock_and_price, meta={'product': product_loader})
-        return product_loader.load_item()
+            return scrapy.Request(url, callback=self.parse_stock_and_price, meta={'product': product})
 
     def parse_stock_and_price(self, response):
         product_loader = response.meta.get('product')
