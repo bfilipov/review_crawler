@@ -5,6 +5,7 @@ import scrapy
 from review_crawler.items import ProductItem, ReviewItem
 from scrapy.loader import ItemLoader
 
+
 class JdSpider(scrapy.Spider):
     name = 'jd'
     allowed_domains = ['jd.com', '3.cn']

@@ -7,11 +7,12 @@
 
 import scrapy
 from scrapy.loader.processors import TakeFirst, MapCompose, Join
+to_str = MapCompose(lambda v: str(v))
 
 
 class ProductItem(scrapy.Item):
-    title = scrapy.Field(output_processor=Join())
     article_id = scrapy.Field(output_processor=TakeFirst())
+    title = scrapy.Field(output_processor=Join())
     images = scrapy.Field()
     url = scrapy.Field(output_processor=TakeFirst())
     list_page = scrapy.Field(output_processor=TakeFirst())
@@ -30,12 +31,12 @@ class ReviewItem(scrapy.Item):
     guid = scrapy.Field(output_processor=TakeFirst())
     images_count = scrapy.Field(output_processor=TakeFirst())
     creation_time = scrapy.Field(output_processor=TakeFirst())
-    images = scrapy.Field()
+    images = scrapy.Field(input_processor=to_str)
     reviewer = scrapy.Field(output_processor=TakeFirst())
     product_color = scrapy.Field(output_processor=TakeFirst())
     product_sales = scrapy.Field(output_processor=TakeFirst())
     product_size = scrapy.Field(output_processor=TakeFirst())
-    videos = scrapy.Field()
+    videos = scrapy.Field(input_processor=to_str)
     reply_count = scrapy.Field(output_processor=TakeFirst())
     reply_count_2 = scrapy.Field(output_processor=TakeFirst())
     review_score = scrapy.Field(output_processor=TakeFirst())

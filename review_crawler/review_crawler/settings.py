@@ -60,7 +60,7 @@ AUTOTHROTTLE_START_DELAY = 2
 AUTOTHROTTLE_TARGET_CONCURRENCY = 3
 AUTOTHROTTLE_DEBUG = True
 CONCURRENT_REQUESTS = 3
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 4
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable Telnet Console (enabled by default)
@@ -78,7 +78,7 @@ TELNETCONSOLE_ENABLED = False
 #    'review_crawler.middlewares.ReviewCrawlerSpiderMiddleware': 543,
 # }
 
-ROTATING_PROXY_PAGE_RETRY_TIMES = 20
+ROTATING_PROXY_PAGE_RETRY_TIMES = 100
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -89,11 +89,22 @@ DOWNLOADER_MIDDLEWARES = {
     'review_crawler.middlewares.ReviewCrawlerDownloaderMiddleware': 543,
 }
 
+DATABASE = {
+    'drivername': 'postgres',
+    'host': '',
+    'port': '5432',
+    'username': 'bogo',
+    'password': '',
+    'database': 'review_crawler'
+}
+
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'review_crawler.pipelines.ReviewCrawlerPipeline': 300,
-   'review_crawler.pipelines.WriteToCsv': 301
+   'review_crawler.pipelines.WriteToCsv': 301,
+   'review_crawler.pipelines.PostgresPipeline': 302,
+
 }
 
 # Enable or disable extensions
