@@ -60,7 +60,7 @@ Parse method will be called for each start url. For each item on the listing pag
  
  On the product page we have almost all of the product information except the price and the stock info,
  which are loaded with additional ajax request. We need to find all selectors in the html for the needed 
- fields, which are defined in the Product class in items.py and add them to the product's ItemLoader. 
+ fields, which are defined in the ProductItem class in items module and add them to the ItemLoader instance. 
  After that we load the item to the database and yield two requests for price/stock and reviews APIs.
  
  ```
