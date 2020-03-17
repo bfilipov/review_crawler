@@ -17,23 +17,42 @@ class ReviewCrawlerPipeline(object):
 
 
 class WriteToCsv(object):
-    def process_item(self, item, spider):
+
+    write_headers_products = True
+    write_headers_reviews = True
+    settings = get_project_settings()
+
+    @staticmethod
+    def get_path(item):
         if item.get('article_id'):
-            path = 'CSV_PATH_PRODUCTS'
+            return 'CSV_PATH_PRODUCTS'
         elif item.get('review_id'):
-            path = 'CSV_PATH_REVIEWS'
-        # elif item.get('some QA id'):
-        #     path = 'CSV_PATH_QA'
-        else:
+            return 'CSV_PATH_REVIEWS'
+
+    def write_headers_first_time(self, item):
+
+        path = self.get_path(item)
+        if self.write_headers_products and item.get('article_id'):
+            writer = csv.writer(open(self.settings.get(path), 'w'), lineterminator='\n')
+            writer.writerow([key for key in item.keys()])
+            self.write_headers_products = False
+
+        elif self.write_headers_reviews and item.get('guid'):
+            writer = csv.writer(open(self.settings.get(path), 'w'), lineterminator='\n')
+            writer.writerow([key for key in item.keys()])
+            self.write_headers_reviews = False
+
+    def process_item(self, item, spider):
+        self.write_headers_first_time(item)
+        path = self.get_path(item)
+        if not path:
             return None
-        write_to_csv(item, path)
+        self.write_to_csv(item, path)
         return item
 
-
-def write_to_csv(item, path):
-    settings = get_project_settings()
-    writer = csv.writer(open(settings.get(path), 'a'), lineterminator='\n')
-    writer.writerow([item[key] for key in item.keys()])
+    def write_to_csv(self, item, path):
+        writer = csv.writer(open(self.settings.get(path), 'a'), lineterminator='\n')
+        writer.writerow([item[key] for key in item.keys()])
 
 
 class PostgresPipeline(object):

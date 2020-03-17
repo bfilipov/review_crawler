@@ -109,10 +109,11 @@ class JdSpider(scrapy.Spider):
             return scrapy.Request(url, callback=self.parse_stock_and_price, meta={'product': product})
 
     def parse_stock_and_price(self, response):
-        product_loader = response.meta.get('product')
+        product_loader = ItemLoader(ProductItem(response.meta.get('product', {})), selector=response)
         dct = json.loads(response.text)
-        price = dct.get('stock', {}).get('jdPrice', {}).get('p', '')
-        product_loader.add_value('price', price)
-        stock = dct.get('stock', {}).get('StockStateName', '')
-        product_loader.add_value('stock', stock)
+        if dct:
+            price = dct.get('stock', {}).get('jdPrice', {}).get('p', '')
+            product_loader.add_value('price', price)
+            stock = dct.get('stock', {}).get('StockStateName', '')
+            product_loader.add_value('stock', stock)
         return product_loader.load_item()

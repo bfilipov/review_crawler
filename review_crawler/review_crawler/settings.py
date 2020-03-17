@@ -15,8 +15,8 @@ BOT_NAME = 'review_crawler'
 SPIDER_MODULES = ['review_crawler.spiders']
 NEWSPIDER_MODULE = 'review_crawler.spiders'
 
-DNS_TIMEOUT = 15
-DOWNLOAD_TIMEOUT = 15
+DNS_TIMEOUT = 20
+DOWNLOAD_TIMEOUT = 25
 
 # most common user agents from:
 # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
@@ -78,7 +78,7 @@ TELNETCONSOLE_ENABLED = False
 #    'review_crawler.middlewares.ReviewCrawlerSpiderMiddleware': 543,
 # }
 
-ROTATING_PROXY_PAGE_RETRY_TIMES = 100
+ROTATING_PROXY_PAGE_RETRY_TIMES = 150
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -104,7 +104,6 @@ ITEM_PIPELINES = {
    'review_crawler.pipelines.ReviewCrawlerPipeline': 300,
    'review_crawler.pipelines.WriteToCsv': 301,
    'review_crawler.pipelines.PostgresPipeline': 302,
-
 }
 
 # Enable or disable extensions
