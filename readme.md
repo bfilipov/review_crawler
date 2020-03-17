@@ -1,12 +1,12 @@
-### create virtual environment using conda and install required packages:
- conda create --name=review_crawler python=3.7    
- conda activate review_crawler    
- git clone git@github.com:bfilipov/review_crawler.git
- cd review_crawler
- pip install -r requirements.txt
+### create virtual environment using conda and install required packages:   
+ conda create --name=review_crawler python=3.7     
+ conda activate review_crawler     
+ git clone git@github.com:bfilipov/review_crawler.git   
+ cd review_crawler   
+ pip install -r requirements.txt   
 
-### run crawler:
- scrapy crawl jd  
+### run crawler:  
+ scrapy crawl jd   
  
 ---
 
