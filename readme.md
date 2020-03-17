@@ -1,14 +1,21 @@
-### create virtual environment using conda and install required packages:   
+## Setup
+
+ create virtual environment using conda and install required packages:  
+ ```
  conda create --name=review_crawler python=3.7     
  conda activate review_crawler     
  git clone git@github.com:bfilipov/review_crawler.git   
  cd review_crawler   
- pip install -r requirements.txt   
+ pip install -r requirements.txt  
+``` 
+ 
 
 ### run crawler:  
- scrapy crawl jd   
+ `scrapy crawl jd`   
  
 ---
+
+### Task:
 
 The task is to scrpape user reviews for tablet products from jd.com.
 
@@ -19,6 +26,13 @@ are loaded dynamically as well the reviews.
 We will use relational database with two tables - one for products and one for reviews, using one
  to one relation with product's id. We will use upsert operation, on each item, thus we will have 
  the latest state of the data. We are not interested in creating history tables for now.
+ 
+In order not to get banned to quickly we are going to create a script using ProxyBroker in order to 
+get free public proxies for the scraping task. Next we will use few of the most common used 
+user-agent headers that we will rotate along with the proxies. 
+
+---
+### Spider:
 
 We generate a new spider and append to the start_urls variable the tablets listing page url:
 
