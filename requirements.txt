@@ -32,7 +32,7 @@ psycopg2==2.8.4
 ptyprocess==0.6.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-pycares==3.1.1
+pycares==4.2.0
 pycparser==2.20
 PyDispatcher==2.0.5
 Pygments==2.6.1
